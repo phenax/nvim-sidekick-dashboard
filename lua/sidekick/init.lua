@@ -62,25 +62,20 @@ function M.show_deadline(deadline_capture)
   local row = deadline_capture.node:range(false)
 
   local get_hl = function(datetime)
-    if datetime.is_today then
-      return '@sidekick.time.today'
-    elseif datetime.is_tomorrow then
-      return '@sidekick.time.tomorrow'
-    elseif datetime.days < 0 then
-      return '@sidekick.time.overdue'
-    elseif datetime.days < 5 then
-      return '@sidekick.time.soon'
-    else
-      return '@sidekick.time.default'
+    if datetime.is_today then return '@sidekick.time.today'
+    elseif datetime.is_tomorrow then return '@sidekick.time.tomorrow'
+    elseif datetime.days < 0 then return '@sidekick.time.overdue'
+    elseif datetime.days < 5 then return '@sidekick.time.soon'
+    else return '@sidekick.time.default'
     end
   end
 
   local get_text = function(datetime)
-    if datetime.is_today then return 'Today'
-    elseif datetime.is_tomorrow then return 'Tomorrow'
-    elseif datetime.days < 0 then return 'Overdue (' .. datetime.raw .. ')'
-    elseif datetime.days < 5 then return datetime.raw .. ' (' .. datetime.days .. ' days left)'
-    else return datetime.raw
+    if datetime.is_today then return ' Today '
+    elseif datetime.is_tomorrow then return ' Tomorrow '
+    elseif datetime.days < 0 then return '[Overdue: ' .. datetime.raw .. ']'
+    elseif datetime.days < 5 then return '[' .. datetime.days .. ' days left]'
+    else return '[' .. datetime.raw .. ']'
     end
   end
 
@@ -91,7 +86,7 @@ function M.show_deadline(deadline_capture)
     end_col = 0,
     hl_group = 'NormalFloat',
     virt_text = {
-      { ' ' .. get_text(datetime) .. ' ', get_hl(datetime) },
+      { get_text(datetime), get_hl(datetime) },
       { ' ', 'NormalFloat' }
     },
     virt_text_pos = 'right_align',
@@ -112,7 +107,11 @@ function M.update_metadata()
     ft = 'norg',
     names = { '_timestamp' },
     callback = function(capture)
-      if capture._timestamp ~= nil then
+      if capture._timestamp == nil then return end
+      local node = capture._timestamp.node:parent()
+      if node:prev_sibling() == nil then return end
+      local task_type = node:prev_sibling():prev_sibling()
+      if task_type ~= nil and not vim.tbl_contains({ 'todo_item_done' }, task_type:type()) then
         M.show_deadline(capture._timestamp)
       end
     end,

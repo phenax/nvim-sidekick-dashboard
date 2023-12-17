@@ -69,7 +69,7 @@ function M.update_time()
   local height = vim.api.nvim_get_option('lines')
 
   -- Clock
-  local time = vim.fn.strftime('%H:%M:%S')
+  local time = vim.fn.strftime('%I:%M:%S')
   local get_padding_x = function(lines)
     local max_len = math.max(unpack(vim.tbl_map(vim.api.nvim_strwidth, lines)))
     return (width - max_len)/2
