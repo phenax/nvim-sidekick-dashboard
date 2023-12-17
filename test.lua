@@ -8,7 +8,5 @@ vim.opt.rtp:append(vim.fn.getcwd())
 
 ---
 
-require('sidekick').setup({})
-
-require('sidekick').open()
+require('sidekick').setup({ file = './tasks.norg' }).open()
 

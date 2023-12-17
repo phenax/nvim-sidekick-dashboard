@@ -1,4 +1,7 @@
+local utils = require('sidekick.utils')
+
 local M = {
+  content_file = nil,
   clock = require('sidekick.clock'),
 }
 
@@ -8,23 +11,39 @@ local clock_window = nil
 local content_window = nil
 local content_buffer = vim.api.nvim_create_buf(true, false)
 
-function M.setup()
-  M.clock.configure()
+function M.setup(c)
+  if c.file == nil then
+    error('Option file is required')
+  end
+
+  M.content_file = c.file
+
+  return M
 end
 
 function M.open()
-  M.clock.update_time()
-
   M.setup_windows()
   M.configure_windows()
 
+  -- Start clock updates
   M.clock.start()
 
-  -- Load file
-  vim.api.nvim_buf_set_name(content_buffer, './tasks.norg')
+  -- Load content buffer
+  vim.api.nvim_buf_set_name(content_buffer, M.content_file)
   vim.api.nvim_buf_call(content_buffer, vim.cmd.edit)
 
-  vim.api.nvim_create_autocmd("WinResized", { callback = M.configure_windows })
+  -- Reconfigure windows on resize
+  vim.api.nvim_create_autocmd('WinResized', { callback = M.configure_windows })
+
+  -- Quit if content buffer is closed
+  vim.api.nvim_create_autocmd('BufEnter', {
+    nested = true,
+    callback = function()
+      if not utils.is_buffer_open(content_buffer) then
+        vim.cmd'qa'
+      end
+    end,
+  })
 end
 
 function M.configure_windows()
@@ -55,6 +74,8 @@ function M.configure_windows()
 end
 
 function M.setup_windows()
+  M.clock.configure_buffer()
+
   clock_window = clock_window or vim.api.nvim_open_win(M.clock.buffer, false, {
     relative = 'editor',
     style = 'minimal',
@@ -76,10 +97,10 @@ function M.setup_windows()
     col = 0,
   })
 
-  local clockhl = { bg = "none", fg = "#ffffff", bold = true }
-  vim.api.nvim_set_hl(clock_ns, "NormalFloat", clockhl)
+  local clockhl = { bg = 'none', fg = '#ffffff', bold = true }
+  vim.api.nvim_set_hl(clock_ns, 'NormalFloat', clockhl)
 
-  vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none", fg = "#ffffff" })
+  vim.api.nvim_set_hl(0, 'NormalFloat', { bg = 'none', fg = '#ffffff' })
 end
 
 return M

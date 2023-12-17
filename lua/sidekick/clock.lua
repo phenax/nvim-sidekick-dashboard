@@ -1,4 +1,5 @@
 local font = require('sidekick.font')
+local utils = require('sidekick.utils')
 
 local M = {
   buffer = nil,
@@ -6,11 +7,13 @@ local M = {
   last_line_number = 0,
 }
 
-function M.configure(c)
+function M.configure_buffer()
   M.buffer = M.buffer or vim.api.nvim_create_buf(false, true)
 end
 
 function M.start()
+  M.configure_buffer()
+
   if M.timer ~= nil then
     M.timer:stop()
   end
@@ -21,14 +24,6 @@ function M.start()
   end))
 end
 
-local function lines(str)
-  local t = {}
-  for line in str:gmatch('[^\r\n]+') do
-    table.insert(t, line)
-  end
-  return t
-end
-
 function M.str_to_glyph(str)
   local glyphs = {}
   for ch in str:gmatch('.') do
@@ -37,7 +32,7 @@ function M.str_to_glyph(str)
       return
     end
 
-    table.insert(glyphs, lines(font.characters[ch]))
+    table.insert(glyphs, utils.lines(font.characters[ch]))
   end
 
   return glyphs
@@ -68,8 +63,10 @@ function M.glyph_lines(glyphs, get_padding_x, padding_y)
 end
 
 function M.update_time()
-  local width = vim.api.nvim_get_option("columns")
-  local height = vim.api.nvim_get_option("lines")
+  M.configure_buffer()
+
+  local width = vim.api.nvim_get_option('columns')
+  local height = vim.api.nvim_get_option('lines')
 
   -- Clock
   local time = vim.fn.strftime('%H:%M:%S')
