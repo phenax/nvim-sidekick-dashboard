@@ -84,9 +84,6 @@ function M.update_time()
   date = string.rep(' ', (width - #date)/2) .. date
   vim.api.nvim_buf_set_lines(M.buffer, #glyphs, #glyphs + 1, false, { date })
 
-  -- Seperator
-  -- vim.api.nvim_buf_set_lines(M.buffer, #glyphs, #glyphs + 1, false, { string.rep('⎯', width) })
-
   M.last_line_number = #glyphs + 1
 end
 
