@@ -1,4 +1,4 @@
-return {
+local characters = {
   [':'] = [[
     
  ██ 
@@ -78,3 +78,6 @@ return {
 ]],
 }
 
+return {
+  characters = characters,
+}

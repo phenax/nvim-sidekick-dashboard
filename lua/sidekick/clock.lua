@@ -7,7 +7,7 @@ local M = {
 }
 
 function M.configure(c)
-  M.buffer = c.buffer
+  M.buffer = M.buffer or vim.api.nvim_create_buf(false, true)
 end
 
 function M.start()
@@ -32,12 +32,12 @@ end
 function M.str_to_glyph(str)
   local glyphs = {}
   for ch in str:gmatch('.') do
-    if font[ch] == nil then
+    if font.characters[ch] == nil then
       print('missing glyph for ' .. ch)
       return
     end
 
-    table.insert(glyphs, lines(font[ch]))
+    table.insert(glyphs, lines(font.characters[ch]))
   end
 
   return glyphs
@@ -51,7 +51,7 @@ function M.glyph_lines(glyphs, get_padding_x, padding_y)
   for i = 1, #glyphs[1] do
     local line = ''
     for j = 1, #glyphs do
-      line = line .. ' ' .. glyphs[j][i]
+      line = line .. ' ' .. (glyphs[j][i] or '')
     end
     table.insert(lines, line)
   end
@@ -80,8 +80,12 @@ function M.update_time()
   local glyphs = M.glyph_lines(M.str_to_glyph(time), get_padding_x, 2)
   vim.api.nvim_buf_set_lines(M.buffer, 0, #glyphs, false, glyphs)
 
+  local date = vim.fn.strftime('%A, %d %B')
+  date = string.rep(' ', (width - #date)/2) .. date
+  vim.api.nvim_buf_set_lines(M.buffer, #glyphs, #glyphs + 1, false, { date })
+
   -- Seperator
-  vim.api.nvim_buf_set_lines(M.buffer, #glyphs, #glyphs + 1, false, { string.rep('⎯', width) })
+  -- vim.api.nvim_buf_set_lines(M.buffer, #glyphs, #glyphs + 1, false, { string.rep('⎯', width) })
 
   M.last_line_number = #glyphs + 1
 end
