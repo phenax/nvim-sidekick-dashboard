@@ -2,7 +2,8 @@ local font = require('sidekick.font')
 
 local M = {
   buffer = nil,
-  timer = nil
+  timer = nil,
+  last_line_number = 0,
 }
 
 function M.configure(c)
@@ -67,13 +68,13 @@ function M.glyph_lines(glyphs, get_padding_x, padding_y)
 end
 
 function M.update_time()
-  local width = vim.api.nvim_win_get_width(0)
-  local height = vim.api.nvim_win_get_height(0)
+  local width = vim.api.nvim_get_option("columns")
+  local height = vim.api.nvim_get_option("lines")
 
   -- Clock
   local time = vim.fn.strftime('%H:%M:%S')
   local get_padding_x = function(lines)
-    local max_len = math.max(unpack(vim.tbl_map(vim.fn.strdisplaywidth, lines)))
+    local max_len = math.max(unpack(vim.tbl_map(vim.api.nvim_strwidth, lines)))
     return (width - max_len)/2
   end
   local glyphs = M.glyph_lines(M.str_to_glyph(time), get_padding_x, 2)
@@ -82,7 +83,7 @@ function M.update_time()
   -- Seperator
   vim.api.nvim_buf_set_lines(M.buffer, #glyphs, #glyphs + 1, false, { string.rep('⎯', width) })
 
-  clock_endline = #glyphs + 1
+  M.last_line_number = #glyphs + 1
 end
 
 return M
