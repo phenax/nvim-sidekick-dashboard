@@ -1,0 +1,14 @@
+#!/usr/bin/env sh
+
+PLUGIN_PATH="$HOME/dev/projects/nvim-sidekick-dashboard"
+NOTES_PATH="$HOME/nixos/extras/notes"
+TASKS_FILE="$NOTES_PATH/tasks.norg"
+CLASS_NAME=sidekick
+
+st \
+  -f "JetBrainsMono Nerd Font:pixelsize=17" \
+  -c $CLASS_NAME \
+  -d "$NOTES_PATH" \
+  -e nvim \
+    -c "set rtp+=$PLUGIN_PATH" \
+    -c "lua require('sidekick').setup({ file = '$TASKS_FILE' }).open()"
