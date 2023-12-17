@@ -1,11 +1,12 @@
 * Priority
   - (x) Testing this stuff
-  - ( ) Task number 2 @(12 Jan)
+  - ( |@17 Dec) Task number 2 @(12 Jan)
   - ( ) Task number 3
 
 * Later
-  - (x) Hello world
-  - ( ) Hello world
+  - (x|@18 Dec) Hello world
+  - ( |@19 Dec) Hello world
+  - ( |@15 Dec) Hello world
 
 * Maybe
-  - ( ) Wow
+  - ( |@5 Jan 2024) Wow
