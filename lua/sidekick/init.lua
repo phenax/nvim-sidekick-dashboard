@@ -131,7 +131,7 @@ function M.open()
   vim.opt.conceallevel = 0
 
   M.update_metadata()
-  vim.api.nvim_create_autocmd('InsertLeave', {
+  vim.api.nvim_create_autocmd({ 'InsertLeave', 'TextChanged' }, {
     buffer = content_buffer,
     callback = M.update_metadata,
   })
