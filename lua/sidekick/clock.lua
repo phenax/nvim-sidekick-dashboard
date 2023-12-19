@@ -5,6 +5,7 @@ local M = {
   buffer = nil,
   timer = nil,
   last_line_number = 0,
+  namespace = vim.api.nvim_create_namespace('sk.clock')
 }
 
 function M.configure_buffer()
@@ -13,6 +14,7 @@ end
 
 function M.start()
   M.configure_buffer()
+  vim.api.nvim_set_hl(M.namespace, 'NormalFloat', { bg = 'none', fg = '#ffffff', bold = true })
 
   if M.timer ~= nil then
     M.timer:stop()
