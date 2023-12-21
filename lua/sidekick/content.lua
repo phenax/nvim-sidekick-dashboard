@@ -32,19 +32,19 @@ local task_item_query = vim.treesitter.query.parse('norg', [[
 ]])
 
 local get_hl = function(datetime)
-  if datetime.is_today then return '@sidekick.time.today'
-  elseif datetime.is_tomorrow then return '@sidekick.time.tomorrow'
+  if datetime.days == 0 then return '@sidekick.time.today'
+  elseif datetime.days == 1 then return '@sidekick.time.tomorrow'
   elseif datetime.days < 0 then return '@sidekick.time.overdue'
-  elseif datetime.days < 5 then return '@sidekick.time.soon'
+  elseif datetime.days < 7 then return '@sidekick.time.soon'
   else return '@sidekick.time.default'
   end
 end
 
 local get_text = function(datetime)
-  if datetime.is_today then return ' Today '
-  elseif datetime.is_tomorrow then return ' Tomorrow '
-  elseif datetime.days < 0 then return '[Overdue: ' .. datetime.raw .. ']'
-  elseif datetime.days < 5 then return '[' .. datetime.days .. ' days left]'
+  if datetime.days == 0 then return ' Today '
+  elseif datetime.days == 1 then return ' Tomorrow '
+  elseif datetime.days < 0 then return '[Overdue: ' .. -datetime.days .. ' days]'
+  elseif datetime.days < 7 then return '[' .. datetime.days .. ' days left]'
   else return '[' .. datetime.raw .. ']'
   end
 end
@@ -71,8 +71,6 @@ local function parse_date(date_str)
   return {
     timestamp = date,
     raw = date_str,
-    is_today = days == 0,
-    is_tomorrow = days == 1,
     days = days,
   }
 end
