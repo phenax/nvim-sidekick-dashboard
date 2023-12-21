@@ -65,7 +65,7 @@ local function parse_date(date_str)
     error('Invalid date: ' .. date_str)
   end
 
-  local date = os.time({ year = year, month = month, day = day })
+  local date = os.time({ year = year, month = month, day = day, hour = 0, min = 0, sec = 0 })
   local days = math.ceil(os.difftime(date, os.time()) / (24 * 60 * 60))
 
   return {

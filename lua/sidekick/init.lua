@@ -1,13 +1,12 @@
 local utils = require('sidekick.utils')
 
 local M = {
-  content_file = nil,
+  content_file_path = nil,
   clock = require('sidekick.clock'),
   content = require('sidekick.content'),
 }
 
 local clock_window = nil
-
 local content_window = nil
 
 function M.setup(c)
@@ -15,7 +14,7 @@ function M.setup(c)
     error('Option file is required')
   end
 
-  M.content_file = c.file
+  M.content_file_path = c.file
 
   return M
 end
@@ -28,7 +27,7 @@ function M.open()
   M.clock.start()
 
   -- Start content buffer
-  M.content.start(M.content_file)
+  M.content.start(M.content_file_path)
 
   -- Reconfigure windows on resize
   vim.api.nvim_create_autocmd('WinResized', { callback = M.configure_windows })
