@@ -26,11 +26,6 @@ function M.start(file)
   })
 end
 
-local task_item_query = vim.treesitter.query.parse('norg', [[
-  (detached_modifier_extension
-    (timestamp timestamp:(timestamp_data)@_timestamp))
-]])
-
 local get_hl = function(datetime)
   if datetime.days == 0 then return '@sidekick.time.today'
   elseif datetime.days == 1 then return '@sidekick.time.tomorrow'
@@ -49,37 +44,11 @@ local get_text = function(datetime)
   end
 end
 
-local months = {
-  Jan = 1, Feb = 2, Mar = 3, Apr = 4, May = 5, Jun = 6,
-  Jul = 7, Aug = 8, Sep = 9, Oct = 10, Nov = 11, Dec = 12
-}
-
-local function parse_date(date_str)
-  local day, month_str, year = date_str:match('(%d+)%s+(%a+)%s*(%d*)')
-  local month = months[month_str]
-  if year == "" or year == nil then
-    year = os.date("%Y")
-  end
-
-  if day == nil or month == nil then
-    error('Invalid date: ' .. date_str)
-  end
-
-  local date = os.time({ year = year, month = month, day = day, hour = 0, min = 0, sec = 0 })
-  local days = math.ceil(os.difftime(date, os.time()) / (24 * 60 * 60))
-
-  return {
-    timestamp = date,
-    raw = date_str,
-    days = days,
-  }
-end
-
 function M.show_deadline(deadline_capture)
   local time = deadline_capture.text
   local row = deadline_capture.node:range(false)
 
-  local datetime = parse_date(time)
+  local datetime = utils.parse_date(time)
 
   M.extmarks[row] = vim.api.nvim_buf_set_extmark(M.buffer, M.namespace, row, 0, {
     end_line = row,
@@ -98,6 +67,11 @@ function M.clear_exts()
     vim.api.nvim_buf_del_extmark(M.buffer, M.namespace, ext_id)
   end
 end
+
+local task_item_query = vim.treesitter.query.parse('norg', [[
+  (detached_modifier_extension
+    (timestamp timestamp:(timestamp_data)@_timestamp))
+]])
 
 function M.update()
   M.clear_exts()
