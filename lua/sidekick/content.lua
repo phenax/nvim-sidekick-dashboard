@@ -48,14 +48,21 @@ function M.show_deadline(deadline_capture)
   local time = deadline_capture.text
   local row = deadline_capture.node:range(false)
 
-  local datetime = utils.parse_date(time)
+  local is_valid, datetime = pcall(utils.parse_date, time)
+
+  local virt_text = nil
+  if is_valid then
+    virt_text = { get_text(datetime), get_hl(datetime) }
+  else
+    virt_text = { ':: Invalid format ::', '@sidekick.time.overdue' }
+  end
 
   M.extmarks[row] = vim.api.nvim_buf_set_extmark(M.buffer, M.namespace, row, 0, {
     end_line = row,
     end_col = 0,
     hl_group = 'NormalFloat',
     virt_text = {
-      { get_text(datetime), get_hl(datetime) },
+      virt_text,
       { ' ', 'NormalFloat' }
     },
     virt_text_pos = 'right_align',
