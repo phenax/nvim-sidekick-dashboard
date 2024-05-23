@@ -37,7 +37,7 @@ function M.open()
     nested = true,
     callback = function()
       if not utils.is_buffer_open(M.content.buffer) then
-        vim.cmd'qa'
+        vim.cmd 'qa'
       end
     end,
   })
@@ -61,7 +61,7 @@ function M.configure_windows()
   local content_width = width
   local top = M.clock.last_line_number + 3
   vim.api.nvim_win_set_config(content_window, {
-    relative = 'win',
+    relative = 'editor',
     width = content_width - 1,
     height = height - top,
     row = top,
@@ -88,6 +88,7 @@ function M.setup_windows()
     row = 0,
     col = 0,
   })
+  vim.api.nvim_set_option_value('winfixbuf', true, { win = clock_window })
 
   M.content.configure_buffer()
   content_window = content_window or vim.api.nvim_open_win(M.content.buffer, true, {
@@ -99,6 +100,7 @@ function M.setup_windows()
     row = 0,
     col = 0,
   })
+  vim.api.nvim_set_option_value('winfixbuf', true, { win = content_window })
 
   vim.api.nvim_set_hl(0, 'NormalFloat', { bg = 'none', fg = '#ffffff', bold = false })
 end
