@@ -100,7 +100,7 @@ function M.setup_windows()
     row = 0,
     col = 0,
   })
-  vim.api.nvim_set_option_value('winfixbuf', true, { win = content_window })
+  -- vim.api.nvim_set_option_value('winfixbuf', true, { win = content_window })
 
   vim.api.nvim_set_hl(0, 'NormalFloat', { bg = 'none', fg = '#ffffff', bold = false })
 end
