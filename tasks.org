@@ -1,0 +1,13 @@
+* Priority
+  - [x] This task that I've already finished
+  - [ ] Some task that I totally forgot about
+  - [ ] Gotta do this soon
+  - [ ] Task number 4
+  - [ ] Task number RIGHT NOW
+
+* Links
+  - {https://github.com/phenax}
+  - {https://ediblemonad.dev/}
+
+* Notes
+  - This is a note

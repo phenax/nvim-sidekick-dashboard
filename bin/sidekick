@@ -2,7 +2,7 @@
 
 PLUGIN_PATH="$HOME/dev/projects/nvim-sidekick-dashboard"
 NOTES_PATH="$HOME/nixos/extras/notes"
-TASKS_FILE="$NOTES_PATH/tasks.norg"
+TASKS_FILE="$NOTES_PATH/tasks.org"
 CLASS_NAME=sidekick
 
 st \

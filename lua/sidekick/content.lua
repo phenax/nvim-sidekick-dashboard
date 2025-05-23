@@ -16,7 +16,7 @@ function M.start(file)
   -- Load content buffer
   vim.api.nvim_buf_set_name(M.buffer, file)
   vim.api.nvim_buf_call(M.buffer, vim.cmd.edit)
-  vim.opt.conceallevel = 0
+  vim.opt.conceallevel = 2
 
   -- Update deadline hints on text change
   M.update()
@@ -27,20 +27,30 @@ function M.start(file)
 end
 
 local get_hl = function(datetime)
-  if datetime.days == 0 then return '@sidekick.time.today'
-  elseif datetime.days == 1 then return '@sidekick.time.tomorrow'
-  elseif datetime.days < 0 then return '@sidekick.time.overdue'
-  elseif datetime.days < 7 then return '@sidekick.time.soon'
-  else return '@sidekick.time.default'
+  if datetime.days == 0 then
+    return '@sidekick.time.today'
+  elseif datetime.days == 1 then
+    return '@sidekick.time.tomorrow'
+  elseif datetime.days < 0 then
+    return '@sidekick.time.overdue'
+  elseif datetime.days < 7 then
+    return '@sidekick.time.soon'
+  else
+    return '@sidekick.time.default'
   end
 end
 
 local get_text = function(datetime)
-  if datetime.days == 0 then return ' Today '
-  elseif datetime.days == 1 then return ' Tomorrow '
-  elseif datetime.days < 0 then return '[Overdue: ' .. -datetime.days .. ' days]'
-  elseif datetime.days < 7 then return '[' .. datetime.days .. ' days left]'
-  else return '[' .. datetime.raw .. ']'
+  if datetime.days == 0 then
+    return ' Today '
+  elseif datetime.days == 1 then
+    return ' Tomorrow '
+  elseif datetime.days < 0 then
+    return '[Overdue: ' .. -datetime.days .. ' days]'
+  elseif datetime.days < 7 then
+    return '[' .. datetime.days .. ' days left]'
+  else
+    return '[' .. datetime.raw .. ']'
   end
 end
 
